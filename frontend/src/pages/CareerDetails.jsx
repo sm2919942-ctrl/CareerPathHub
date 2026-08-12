@@ -38,7 +38,8 @@ function CareerDetails() {
   const user = JSON.parse(
   localStorage.getItem("user")
 );
-const saveCareer = async () => {
+const saveCareer = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
 
   if (!user) {
     alert("Please login first");
@@ -46,32 +47,30 @@ const saveCareer = async () => {
     return;
   }
 
-  try {
+  const existingSaved =
+    JSON.parse(localStorage.getItem("savedCareers")) || [];
 
-    const response = await fetch(
-      "http://localhost:8080/api/saved",
-      {
-        method: "POST",
+  const alreadySaved = existingSaved.includes(career.id);
 
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-          userId: user.id,
-          careerId: career.id
-        })
-      }
-    );
-
-    if (response.ok) {
-      setSaved(true);
-      alert("Career saved successfully");
-    }
-
-  } catch (error) {
-    console.error(error);
+  if (alreadySaved) {
+    alert("Career already saved");
+    setSaved(true);
+    return;
   }
+
+  const updatedSaved = [
+    ...existingSaved,
+    career.id
+  ];
+
+  localStorage.setItem(
+    "savedCareers",
+    JSON.stringify(updatedSaved)
+  );
+
+  setSaved(true);
+
+  alert("Career saved successfully!");
 };
 
   if (!career) {
