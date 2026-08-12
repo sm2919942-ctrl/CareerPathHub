@@ -39,51 +39,28 @@ function Signup() {
     });
 
   };
-const handleSubmit = async (e) => {
-
+const handleSubmit = (e) => {
   e.preventDefault();
 
-  try {
+  const newUser = {
+    id: Date.now(),
+    name: formData.name,
+    email: formData.email,
+    mobile: formData.mobile,
+    qualification: formData.qualification,
+    stream: formData.stream,
+    password: formData.password
+  };
 
-    const response = await fetch(
-      "http://localhost:8080/api/users/register",
-      {
-        method: "POST",
+  // Demo account browser me save
+  localStorage.setItem(
+    "registeredUser",
+    JSON.stringify(newUser)
+  );
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+  alert("Account created successfully!");
 
-        body: JSON.stringify(formData)
-      }
-    );
-
-    if (!response.ok) {
-
-      const errorMessage =
-        await response.text();
-
-      alert(errorMessage);
-
-      return;
-    }
-
-    const data = await response.json();
-
-    console.log("Registered User:", data);
-
-    alert("Registration successful!");
-
-    navigate("/login");
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Backend connection failed. Please check Spring Boot server."
-    );
-  }
+  navigate("/login");
 };
 
   return (

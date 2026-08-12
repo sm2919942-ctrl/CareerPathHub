@@ -31,59 +31,50 @@ function Login() {
     });
   };
 
-  const handleSubmit = async (e) => {
-
+ const handleSubmit = (e) => {
   e.preventDefault();
 
-  try {
+  const savedUser = localStorage.getItem(
+    "registeredUser"
+  );
 
-    const response = await fetch(
-      "http://localhost:8080/api/users/login",
-      {
-        method: "POST",
+  if (!savedUser) {
+    alert("No account found. Please create an account first.");
+    navigate("/signup");
+    return;
+  }
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+  const registeredUser = JSON.parse(savedUser);
 
-        body: JSON.stringify(formData)
-      }
-    );
+  if (
+    registeredUser.email === formData.email &&
+    registeredUser.password === formData.password
+  ) {
 
-    if (!response.ok) {
-
-      const message =
-        await response.text();
-
-      alert(message);
-
-      return;
-    }
-
-    const user =
-      await response.json();
-
-    console.log("Logged User:", user);
+    const loggedInUser = {
+      id: registeredUser.id,
+      name: registeredUser.name,
+      email: registeredUser.email,
+      mobile: registeredUser.mobile,
+      qualification: registeredUser.qualification,
+      stream: registeredUser.stream
+    };
 
     localStorage.setItem(
       "user",
-      JSON.stringify(user)
+      JSON.stringify(loggedInUser)
     );
 
     alert("Login successful!");
 
     navigate("/dashboard");
 
-  } catch (error) {
+  } else {
 
-    console.error(error);
+    alert("Invalid email or password.");
 
-    alert(
-      "Unable to connect with backend."
-    );
   }
 };
-
   return (
     <main className="auth-page">
 
